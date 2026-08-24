@@ -1,14 +1,9 @@
-# TDH Labs — Umbrel Community App Store
+# MOVED — this store is retired
 
-Add to umbrelOS: **App Store → ⋮ → Community App Stores → Add Store** → paste:
+Anton is distributed via the canonical TDH Labs community store:
 
-```
-https://github.com/TDH-Labs/umbrel-store
-```
+**https://github.com/TDH-Labs/anton-community-app-store**
 
-Then install **Anton** from the TDH Labs store.
-
-First boot: open Anton from your home screen — the login password is
-shown once on the login page (save it). Then enter the Owner claim code
-from the app's logs (Umbrel → Anton → ⋮ → Logs → look for
-`FIRST-RUN OWNER CLAIM CODE`) to claim ownership in the Ops Center.
+If you added THIS store URL in umbrelOS, replace it with the URL above.
+(This placeholder exists because deleting repos requires an admin token
+scope; it can be deleted outright by anyone with delete_repo rights.)
