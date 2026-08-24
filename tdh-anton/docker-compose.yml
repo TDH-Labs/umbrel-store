@@ -1,0 +1,37 @@
+services:
+  app_proxy:
+    environment:
+      APP_HOST: tdh-anton_app_1
+      APP_PORT: "3080"
+      # Anton's Ops Center already sits behind its own first-boot password
+      # gate (auth-gate), so skip umbrelOS' additional proxy auth.
+      PROXY_AUTH_ADD: "false"
+  app:
+    image: ghcr.io/tdh-labs/anton@sha256:9d509b2fa2acc0a90e59735a3fd1f4e9b713302f7cd6580ca80dcd3b09ddf230
+    container_name: tdh-anton
+    restart: unless-stopped
+    # No host port bindings: umbrelOS proxies the container's :3080
+    # (the password-gated Ops Center) through app_proxy above.
+    volumes:
+      - anton_data:/data
+    environment:
+      - ANTON_EXECUTOR=${ANTON_EXECUTOR:-pi}
+      - ANTON_DATA_DIR=/data
+      - ANTON_PORT=8799
+      - ANTON_SERVE_PORT=8798
+      - ANTON_WEB_INTERNAL_PORT=3079
+      - ANTON_WEB_PORT=3080
+      # Login password auto-generates on first boot and is shown once on
+      # the login page. Set ANTON_WEB_TOKEN only if you need a known value.
+      - ANTON_WEB_TOKEN=${ANTON_WEB_TOKEN:-}
+      - ANTON_DASHBOARD_TOKEN=${ANTON_DASHBOARD_TOKEN:-}
+    # Mirrors the Dockerfile's HEALTHCHECK -- probes the job engine's real
+    # /health endpoint inside the container, not the login page render.
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8799/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+volumes:
+  anton_data:
