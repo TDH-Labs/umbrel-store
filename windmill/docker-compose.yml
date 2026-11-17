@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: windmill_server_1
+      APP_PORT: 8000
+      PROXY_AUTH_ADD: "false"
+    container_name: windmill_app_proxy_1
+
+  server:
+    image: ghcr.io/windmill-labs/windmill:latest
+    container_name: windmill_server_1
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgres://windmill:windmill@windmill_db_1:5432/windmill?sslmode=disable
+      - MODE=server
+      - BASE_URL=http://${DEVICE_DOMAIN_NAME}:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ${APP_DATA_DIR}/data/windmill:/tmp/windmill
+
+  worker:
+    image: ghcr.io/windmill-labs/windmill:latest
+    container_name: windmill_worker_1
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgres://windmill:windmill@windmill_db_1:5432/windmill?sslmode=disable
+      - MODE=worker
+      - WORKER_GROUP=default
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ${APP_DATA_DIR}/data/worker:/tmp/windmill
+
+  db:
+    image: postgres:16-alpine
+    container_name: windmill_db_1
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: windmill
+      POSTGRES_USER: windmill
+      POSTGRES_PASSWORD: windmill
+    volumes:
+      - ${APP_DATA_DIR}/data/db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U windmill"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

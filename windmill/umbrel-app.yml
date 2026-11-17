@@ -1,0 +1,21 @@
+manifestVersion: 1
+id: windmill
+name: Windmill
+tagline: Open-source developer platform for workflows and automations
+category: developer
+version: "1.442.2"
+port: 8000
+description: >-
+  Windmill is an open-source developer platform that turns scripts into workflows,
+  UIs, and scheduled background automations. Build in Python, TypeScript, Go, Rust,
+  or Bash with sub-second execution speeds, native git sync, and an auto-generated
+  web UI for forms, schedules, and runs.
+developer: Windmill Labs
+website: https://windmill.dev
+repo: https://github.com/windmill-labs/windmill
+support: https://hub.windmill.dev
+icon: assets/icon.svg
+gallery: []
+dependencies: []
+defaultUsername: ""
+defaultPassword: ""
